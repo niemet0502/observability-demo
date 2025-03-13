@@ -16,6 +16,7 @@ import { Coffee } from './coffe-type.entity';
       entities: [Coffee],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Coffee]),
   ],
   controllers: [AppController],
   providers: [AppService],
