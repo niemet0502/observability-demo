@@ -1,1 +1,40 @@
 
+services:
+
+  coffee-db: 
+    image: postgres:17
+    restart: always 
+    environment:
+      - POSTGRES_PASSWORD=passer
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=coffee
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - coffeedata:/var/lib/pgsql/data
+    ports:
+      - "5434:5432"
+
+  water-db: 
+    image: postgres:17
+    restart: always 
+    environment:
+      - POSTGRES_PASSWORD=passer
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=water
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - waterdata:/var/lib/pgsql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  waterdata: 
+  coffeedata:
