@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Water } from './water.entity';
+import { Water } from './water/water.entity';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { Water } from './water.entity';
       entities: [Water],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Water]),
   ],
   controllers: [AppController],
   providers: [AppService],
