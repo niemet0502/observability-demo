@@ -1,6 +1,5 @@
 
 services:
-
   coffee-db: 
     image: postgres:17
     restart: always 
@@ -35,6 +34,43 @@ services:
     ports:
       - "5433:5432"
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.121.0
+    container_name: otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./monitoring/collector.yml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"  # gRPC OTLP
+      - "4318:4318"  # HTTP OTLP
+      - "55680:55680" # OpenTelemetry Protocol (Legacy)
+    depends_on:
+      - tempo
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    user: "0:0"
+    ports:
+      - "4000:4000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana.ini:/etc/grafana/grafana.ini
+      - /etc/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yml" ]
+    volumes:
+      - ./monitoring/tempo.yml:/etc/tempo.yml
+      - tempo-data:/var/tempo
+    ports:
+    #   - "4317:4317"  # OTLP gRPC
+    #   - "4318:4318"  # OTLP gRPC
+      - "3200:3200"  # Tempo UI (if enabled)
 volumes:
   waterdata: 
   coffeedata:
+  grafana-data:
+  tempo-data:
