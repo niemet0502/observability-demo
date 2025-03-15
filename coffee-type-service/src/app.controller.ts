@@ -2,9 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
-  Post,
+  Post
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Coffee } from './coffe-type.entity';
@@ -15,12 +14,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get(':name')
-  async getCoffeeByName(@Param('name') name: string): Promise<Coffee> {
-    const coffee = await this.appService.findByName(name);
-    if (!coffee) {
-      throw new NotFoundException(`Coffee type with name "${name}" not found`);
-    }
-    return coffee;
+  async getCoffeeByName(@Param('name') name: string){
+    return  await this.appService.findByName(name);
   }
 
   @Post()
