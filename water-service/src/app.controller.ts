@@ -2,9 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
-  Post,
+  Post
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateWaterDto } from './water/create-water.dto';
@@ -16,11 +15,7 @@ export class AppController {
 
   @Get(':name')
   async getWaterByName(@Param('name') name: string): Promise<Water> {
-    const water = await this.appService.findByName(name);
-    if (!water) {
-      throw new NotFoundException(`Water with name "${name}" not found`);
-    }
-    return water;
+    return await this.appService.findByName(name);
   }
 
   @Post()
