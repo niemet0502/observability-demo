@@ -8,6 +8,7 @@ import {
 import { AppService } from './app.service';
 import { Coffee } from './coffe-type.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { logger } from './logging';
 
 @Controller('coffee-type')
 export class AppController {
@@ -15,6 +16,10 @@ export class AppController {
 
   @Get(':name')
   async getCoffeeByName(@Param('name') name: string){
+    logger.emit({
+      severityText: "INFO",
+      body: 'testing',
+    })
     return  await this.appService.findByName(name);
   }
 

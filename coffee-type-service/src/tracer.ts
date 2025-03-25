@@ -3,7 +3,7 @@ import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { MySQLInstrumentation } from '@opentelemetry/instrumentation-mysql';
 import { NestInstrumentation } from '@opentelemetry/instrumentation-nestjs-core';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TypeormInstrumentation } from 'opentelemetry-instrumentation-typeorm';
 import * as process from 'process';
@@ -14,10 +14,12 @@ const traceExporter = new OTLPTraceExporter({
   url: 'http://localhost:4317/v1/traces', // Adjust based on your Tempo setup
 });
 
+const resource = resourceFromAttributes({
+  "service.name": 'coffee-type-service',
+});
+
 export const otelSDK = new NodeSDK({
-  resource: new Resource({
-    "service.name": `coffee-type-service`, // update this to a more relevant name for you!
-  }),
+  // resource: new Resource(),
   traceExporter,
   instrumentations: [
     new HttpInstrumentation(),
