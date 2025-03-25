@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - coffeedata:/var/lib/pgsql/data
+      - coffeedata:/var/lib/pgsql
     ports:
       - "5434:5432"
 
@@ -30,7 +30,7 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - waterdata:/var/lib/pgsql/data
+      - waterdata:/var/lib/pgsql
     ports:
       - "5433:5432"
 
@@ -68,9 +68,35 @@ services:
     ports:
     #   - "4317:4317"  # OTLP gRPC
     #   - "4318:4318"  # OTLP gRPC
-      - "3200:3200"  # Tempo UI (if enabled)
+      - "3200:3200"  
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"  
+    volumes:
+      - prometheus-data:/prometheus  
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=0 
+
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: loki
+    ports:
+      - 3100:3100
+    user: "10001:10001"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+     - ./monitoring/loki.yml:/etc/loki/local-config.yaml
+     - loki-data:/loki
+
 volumes:
   waterdata: 
   coffeedata:
   grafana-data:
   tempo-data:
+  prometheus-data:
+  loki-data:
