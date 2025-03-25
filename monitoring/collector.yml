@@ -14,12 +14,30 @@ exporters:
 
   debug:
     verbosity: detailed
+  
+  prometheus: 
+    endpoint: 0.0.0.0:9464
+
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
 
 processors:
   batch:
+  resource:
+    attributes:
+      - key: service_name
+        from_attribute: service.name 
+        action: insert  
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlp, debug]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      processors: [resource]
+      exporters: [debug, loki]
+    metrics: 
+      receivers: [otlp]
+      exporters: [debug, prometheus]

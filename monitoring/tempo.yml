@@ -42,10 +42,10 @@ metrics_generator:
 storage:
   trace:
     backend: local # backend configuration to use
-    wal:
-      path: /tmp/tempo/wal # where to store the the wal locally
     local:
-      path: /tmp/tempo/blocks
+      path: /var/tempo/traces  # ✅ Persistent storage path
+    wal:
+      path: /var/tempo/wal 
 
 overrides:
   defaults:
