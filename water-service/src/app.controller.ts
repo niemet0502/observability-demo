@@ -6,7 +6,6 @@ import {
   Post
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { trackRequest } from './metrics';
 import { CreateWaterDto } from './water/create-water.dto';
 import { Water } from './water/water.entity';
 
@@ -17,7 +16,6 @@ export class AppController {
   @Get(':name')
   async getWaterByName(@Param('name') name: string): Promise<Water> {
 
-    trackRequest(`/water/${name}`, Math.random())
     return await this.appService.findByName(name);
   }
 

@@ -4,7 +4,7 @@ import { resourceFromAttributes } from '@opentelemetry/resources';
 import { LoggerProvider, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 
 const resource = resourceFromAttributes({
-  "service.name": 'coffee-type-service',
+  "service.name": 'water-service',
 });
 
 // Create a Logger Provider
@@ -21,11 +21,11 @@ const logExporter = new OTLPLogExporter({
 loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(logExporter));
 
 // Create a logger
-const logger: Logger = loggerProvider.getLogger("coffee-type-service");
+const logger: Logger = loggerProvider.getLogger("water-service");
 
 logger.emit({
   severityText: "INFO",
-  body: "Coffee-type service started successfully!",
+  body: "water-type service started successfully!",
 });
 
 export { logger };

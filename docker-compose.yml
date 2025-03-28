@@ -44,7 +44,6 @@ services:
     ports:
       - "4317:4317"  # gRPC OTLP
       - "4318:4318"  # HTTP OTLP
-      - "55680:55680" # OpenTelemetry Protocol (Legacy)
     depends_on:
       - tempo
 
@@ -66,8 +65,6 @@ services:
       - ./monitoring/tempo.yml:/etc/tempo.yml
       - tempo-data:/var/tempo
     ports:
-    #   - "4317:4317"  # OTLP gRPC
-    #   - "4318:4318"  # OTLP gRPC
       - "3200:3200"  
 
   prometheus:
