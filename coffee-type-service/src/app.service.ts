@@ -13,24 +13,41 @@ export class AppService {
   ) {}
 
   async findByName(name: string) {
-    const span = trace.getTracer('coffee-db').startSpan('coffee-db');
-    span.setAttribute('db.name', 'coffee-db'); 
-    span.setAttribute('db.query', 'SELECT * FROM coffee'); 
+    const querySpan = trace.getTracer('coffee-db').startSpan('coffee-db-query');
+    const query = `SELECT * FROM coffee WHERE name = '${name}' LIMIT 1;`;
+    querySpan.setAttribute('db.query', query);
+    querySpan.setAttribute('db.name', 'coffee-db');
+    querySpan.end(); // End query span
 
-    const coffe = await this.coffeeRepository.findOne({ where: { name } });
+    try {
+        const coffee = await this.coffeeRepository.findOne({ where: { name } });
 
-    if(!coffe){
-      span.setAttribute('errorMessage', `Coffee type with name "${name}" not found`); 
-      span.setStatus({ code: SpanStatusCode.ERROR, message: `Coffee type with name "${name}" not found` });
-      span.end(); 
-      throw new NotFoundException(`Coffee type with name "${name}" not found`); 
+        if (!coffee) {
+            // Capture Error Case
+            const errorSpan = trace.getTracer('coffee-db').startSpan('coffee-db-error');
+            const errorMessage = `Coffee type with name "${name}" not found`;
+            errorSpan.setAttribute('errorMessage', errorMessage);
+            errorSpan.setAttribute('db.name', 'coffee-db');
+            errorSpan.setAttribute('db.result.count', 0);
+            errorSpan.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
+            errorSpan.end(); // End error span
+
+            throw new NotFoundException(errorMessage);
+        }
+
+        // Capture Successful Result
+        const resultSpan = trace.getTracer('coffee-db').startSpan('coffee-db-result');
+        resultSpan.setAttribute('db.result.count', 1);
+        resultSpan.setStatus({ code: SpanStatusCode.OK });
+        resultSpan.end(); // End result span
+
+        return coffee;
+    } catch (error) {
+        throw error; // Ensure error is properly thrown and handled by the caller
     }
+}
 
-    span.setAttribute('db.result.count', 1);
-    span.setStatus({ code: SpanStatusCode.OK });
-    span.end(); 
-    return coffe; 
-  }
+
 
   async createCoffee(data: CreateCoffeeDto): Promise<Coffee> {
     const newCoffee = this.coffeeRepository.create(data);
