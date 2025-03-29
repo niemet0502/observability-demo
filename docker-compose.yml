@@ -1,5 +1,59 @@
 
 services:
+
+  coffee-service:
+    build:
+      context: ./coffee-service
+      dockerfile: Dockerfile
+    container_name: coffee-service
+    ports:
+      - "3012:3012"
+    environment:
+      - NODE_ENV=development
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: ./coffee-service/src
+          target: /app/src
+        - action: rebuild
+          path: package.json
+
+  coffee-type-service:
+    build:
+      context: ./coffee-type-service
+      dockerfile: Dockerfile
+    container_name: coffee-type-service
+    ports:
+      - "3011:3011"
+    environment:
+      - NODE_ENV=development
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: ./coffee-type-service/src
+          target: /app/src
+        - action: rebuild
+          path: package.json
+
+  water-service:
+    build:
+      context: ./water-service
+      dockerfile: Dockerfile
+    container_name: water-service
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=development
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: ./water-service/src
+          target: /app/src
+        - action: rebuild
+          path: package.json
   coffee-db: 
     image: postgres:17
     restart: always 
