@@ -8,7 +8,7 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import * as process from 'process';
 
 const traceExporter = new OTLPTraceExporter({
-  url: 'http://localhost:4317/v1/traces', 
+  url: 'http://otel-collector:4317/v1/traces', 
 });
 
 export const otelSDK = new NodeSDK({

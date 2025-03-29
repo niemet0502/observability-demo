@@ -9,7 +9,7 @@ const resource = resourceFromAttributes({
 
 // ✅ Use the OTLP Exporter to send metrics to OpenTelemetry Collector
 const metricsExporter = new OTLPMetricExporter({
-    url: 'http://localhost:4318/v1/metrics', // Make sure this matches your OTEL Collector
+    url: 'http://otel-collector:4318/v1/metrics', // Make sure this matches your OTEL Collector
 });
 
 // ✅ Attach the OTLP exporter to the Periodic Metric Reader
@@ -37,6 +37,26 @@ export const requestDuration = meter.createHistogram('http_request_duration_seco
     description: 'Time taken to process requests',
 });
 
+ const successRequestCounter = meter.createHistogram('SUCCESS', {
+    description: 'Total number of success',
+});
+
+ const errorRequestCounter = meter.createHistogram('ERROR', {
+    description: 'Total number of error',
+});
+
+const requestApiCounter = meter.createCounter('http_requests_api', {
+    description: 'Total number of HTTP requests',
+});
+const successfulRequestsGauge = meter.createUpDownCounter('http_requests_success_current', {
+    description: 'Current number of successful coffee requests',
+});
+
+const failedRequestsGauge = meter.createUpDownCounter('http_requests_failed_current', {
+    description: 'Current number of failed coffee requests',
+});
+
+
 // Example function to track a request
 export function trackRequest(route: string, duration: number) {
     requestCounter.add(1, { route }); // ✅ Increment request count
@@ -47,4 +67,6 @@ export function trackRequest(route: string, duration: number) {
 meterProvider.forceFlush().then(() => console.log("Metrics setup complete"));
 
 // Export meterProvider
-export { meterProvider };
+
+export { errorRequestCounter, failedRequestsGauge, requestApiCounter, successfulRequestsGauge, successRequestCounter };
+

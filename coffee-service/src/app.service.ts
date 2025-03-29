@@ -8,7 +8,7 @@ export class AppService {
   private async fetchCoffee(name: string) {
     try {
       const response = await this.httpService.axiosRef.get(
-        `http://localhost:3011/coffee-type/${name}`,
+        `http://coffee-type-service:3011/coffee-type/${name}`,
       );
       return response.data;
     } catch (error) {
@@ -19,7 +19,7 @@ export class AppService {
   private async fetchWater(name: string) {
     try {
       const response = await this.httpService.axiosRef.get(
-        `http://localhost:3010/water/${name}`,
+        `http://water-service:3010/water/${name}`,
       );
       return response.data;
     } catch (error) {

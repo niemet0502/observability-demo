@@ -8,8 +8,8 @@ import { Coffee } from './coffe-type.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5434,
+      host: 'coffee-db',
+      port: 5432,
       username: 'admin',
       password: 'passer',
       database: 'coffee',

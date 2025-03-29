@@ -8,8 +8,8 @@ import { Water } from './water/water.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5433,
+      host: 'water-db',
+      port: 5432,
       username: 'admin',
       password: 'passer',
       database: 'water',

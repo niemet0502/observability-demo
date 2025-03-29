@@ -14,7 +14,7 @@ const loggerProvider = new LoggerProvider(
 
 // Export logs to OpenTelemetry Collector
 const logExporter = new OTLPLogExporter({
-  url: 'http://localhost:4318/v1/logs', // OTLP HTTP endpoint of OTel Collector
+  url: 'http://otel-collector:4318/v1/logs', // OTLP HTTP endpoint of OTel Collector
 });
 
 // Register exporter

@@ -9,7 +9,7 @@ import * as process from 'process';
 // const traceExporter = new ConsoleSpanExporter();
 
 const traceExporter = new OTLPTraceExporter({
-  url: 'http://localhost:4317/v1/traces', // Adjust based on your Tempo setup
+  url: 'http://otel-collector:4317/v1/traces', // Adjust based on your Tempo setup
 });
 
 export const otelSDK = new NodeSDK({
