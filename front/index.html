@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Coffee and Water</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Choose Coffee and Water</h2>
+
+    <form id="drinkForm">
+        <label for="coffee">Select Coffee:</label>
+        <select id="coffee" name="coffee">
+            <option value="touba">Café Touba</option>
+            <option value="nescafe">Nescafé</option>
+            <option value="Cappuccino">Cappuccino</option>
+            <option value="Americano">Americano</option>
+        </select>
+
+        <label for="water">Select Water:</label>
+        <select id="water" name="water">
+            <option value="Spring Water">Spring Water</option>
+            <option value="warm">Warm</option>
+            <option value="hot">Hot</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <p class="error" id="errorMessage"></p>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Time/Temp</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Coffee</strong></td>
+                <td id="coffeeName"></td>
+                <td id="coffeeTime"></td>
+                <td id="coffeeAmount"></td>
+            </tr>
+            <tr>
+                <td><strong>Water</strong></td>
+                <td id="waterName"></td>
+                <td id="waterTemp"></td>
+                <td id="waterAmount"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById("drinkForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const coffee = document.getElementById("coffee").value;
+            const water = document.getElementById("water").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            errorMessage.textContent = ""; // Clear previous errors
+
+            try {
+                const response = await fetch(`http://localhost:3012/${coffee}/${water}`);
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+
+                const data = await response.json();
+
+                console.log(data);
+                
+                if (data && data.coffee && data.water) {
+                    document.getElementById("coffeeName").textContent = data.coffee.name;
+                    document.getElementById("coffeeTime").textContent = data.coffee.time + " min";
+                    document.getElementById("coffeeAmount").textContent = data.coffee.amount;
+
+                    document.getElementById("waterName").textContent = data.water.name;
+                    document.getElementById("waterTemp").textContent = data.water.temparature;
+                    document.getElementById("waterAmount").textContent = data.water.amount;
+
+                    resultTable.style.display = "table"; // Show table only if data is valid
+                }
+            } catch (error) {
+                errorMessage.textContent = "Error: " + error.message;
+            }
+        });
+    </script>
+
+</body>
+</html>
